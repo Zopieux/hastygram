@@ -1,0 +1,19 @@
+root = true
+
+[*]
+end_of_line = lf
+insert_final_newline = true
+
+[*.py]
+indent_size = 4
+indent_style = space
+
+[*.js]
+indent_size = 2
+indent_style = space
+ij_javascript_use_double_quotes = true
+ij_javascript_force_quote_style = true
+
+[*.sass]
+indent_size = 2
+indent_style = space

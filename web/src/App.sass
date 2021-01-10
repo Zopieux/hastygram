@@ -1,0 +1,246 @@
+$text: #eee
+$bg: #2b2b2b
+$accent: #5085b3
+
+$card-size: 293px
+$card-grid-gap: 24px
+$img-radius: 3px
+
+body
+  font-family: sans-serif
+  background-color: $bg
+  color: $text
+  margin: 0
+  padding: 0
+
+//&.modalized
+//  overflow-y: hidden
+
+.hidden
+  display: none
+
+#root
+  $pad: 1rem
+  display: grid
+  grid-template: "title" "aside" "main"
+  grid-gap: $pad * 2
+  padding-top: $pad * 2
+  margin: 0 auto
+
+  @media screen and (min-width: ($card-size + $card-grid-gap) * 2 + $card-grid-gap * 2)
+    width: $card-size * 2 + $card-grid-gap * 1
+
+  @media screen and (min-width: ($card-size + $card-grid-gap) * 3 + $card-grid-gap * 2)
+    width: $card-size * 3 + $card-grid-gap * 2
+
+  @media screen and (min-width: ($card-size + $card-grid-gap) * 4 + $card-grid-gap * 2)
+    width: $card-size * 4 + $card-grid-gap * 3
+
+  h1
+    grid-area: title
+    margin: 0
+
+  aside
+    grid-area: aside
+    display: flex
+    flex-direction: row
+
+    .choose-username
+      flex: 1
+
+      input
+        font: inherit
+        padding: .5rem
+
+    .authentication
+      display: flex
+      flex-direction: column
+      align-items: flex-end
+
+  main
+    grid-area: main
+
+    .user-info
+      display: grid
+      align-items: center
+      column-gap: 1rem
+      row-gap: 1rem
+      grid-template: "pic username" max-content "pic counters" max-content "pic bio" / auto 1fr
+
+      .user-username
+        grid-area: username
+
+        h3
+          font-size: 1.5rem
+          font-weight: normal
+          margin: 0
+          padding: 0
+          &::before
+            content: "@"
+
+      .user-fullname
+        font-size: 0.8rem
+        color: darken($text, 45)
+
+      .user-pic
+        grid-area: pic
+        align-self: flex-start
+        width: 128px
+        height: 128px
+        background-size: cover
+        background-repeat: no-repeat
+        background-position: center center
+        border-radius: $img-radius
+        display: block
+
+      .user-bio
+        grid-area: bio
+        align-self: flex-start
+        white-space: pre-line
+
+      .user-counters
+        grid-area: counters
+        margin: 0
+        padding: 0
+        list-style: none
+        display: block
+
+        li
+          display: inline-block
+          &:not(:last-child)::after
+            content: '⋅'
+            display: inline-block
+            padding: 0 .5rem
+
+.modal
+  position: fixed
+  display: flex
+  justify-content: center
+  padding: 2rem
+  z-index: 10
+  background-color: rgba(0, 0, 0, 0.90)
+  top: 0
+  bottom: 0
+  left: 0
+  right: 0
+
+  .cancel
+    position: absolute
+    background: none
+    top: 0
+    right: 0
+    bottom: 0
+    left: 0
+    z-index: 11
+    cursor: zoom-out
+
+  video, img
+    flex: 0
+    justify-self: center
+    align-self: center
+    object-fit: scale-down
+    box-sizing: border-box
+    max-width: 100%
+    max-height: 100%
+    z-index: 12
+    cursor: initial
+
+  video
+    background-color: black
+
+.feed-grid
+  display: grid
+  grid-template-columns: repeat(auto-fit, $card-size)
+
+  justify-content: center
+  grid-gap: $card-grid-gap
+  margin-top: $card-grid-gap
+
+  .loading
+    display: block
+    width: $card-size
+    height: $card-size
+
+  figure
+    overflow: hidden
+    position: relative
+    margin: 0
+    padding: 0
+    width: $card-size
+    height: $card-size
+    border-radius: $img-radius
+    background-size: cover
+    background-position: center center
+    //box-shadow: 0 0 5px rgba(0, 0, 0, .5)
+    cursor: zoom-in
+
+    $badge-pad: 0.8em
+
+    @mixin badge
+      background-color: rgba(black, 0.35)
+      border-radius: 4px
+      color: rgba(white, 0.7)
+      font-size: .8rem
+      padding: $badge-pad / 2 $badge-pad
+      position: absolute
+
+    figcaption
+      // TODO
+      display: none
+
+    .card-resolution
+      @include badge
+      right: $badge-pad / 2
+      top: $badge-pad / 2
+
+    &:hover
+      .card-counters
+        display: flex
+
+    .card-counters
+      display: none
+      flex-direction: row
+      justify-content: space-around
+      align-items: center
+      align-self: center
+      justify-self: center
+      position: absolute
+      width: 100%
+      height: 100%
+      background-color: rgba(black, .4)
+
+      .like-count, .comment-count
+        font-size: 0.9rem
+        display: flex
+        align-items: center
+        font-weight: bold
+
+        &::before
+          display: inline-block
+          background-size: contain
+          background-repeat: no-repeat
+          width: 19px
+          height: 19px
+          content: ''
+          padding-left: .4em
+
+      .like-count::before
+        background-image: url(data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9JzMwMHB4JyB3aWR0aD0nMzAwcHgnICBmaWxsPSIjRkZGRkZGIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMTAwIDEwMCIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMTAwIDEwMCIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHBhdGggZD0iTTUwLDkwLjMyNmwtMi4wODEtMS4zNjFDNDYuMTcsODcuODIxLDUuMDksNjAuNjc1LDUuMDksMzYuMTk2YzAtMTcuNDEyLDEyLjM3My0yNi41MjEsMjQuNTk1LTI2LjUyMSAgYzcuODEzLDAsMTUuMTMxLDMuNjQ2LDIwLjMxMiw5Ljk0N2M1LjE2NC02LjI5LDEyLjQ5My05Ljk0NywyMC4zMTktOS45NDdjMTIuMjIyLDAsMjQuNTk0LDkuMTEsMjQuNTk0LDI2LjUyMSAgYzAsMjQuNDc5LTQxLjA4LDUxLjYyNS00Mi44MjgsNTIuNzY5TDUwLDkwLjMyNnoiPjwvcGF0aD48L3N2Zz4=)
+
+      .comment-count::before
+        background-image: url(data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9JzMwMHB4JyB3aWR0aD0nMzAwcHgnICBmaWxsPSIjRkZGRkZGIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4bWw6c3BhY2U9InByZXNlcnZlIiBzdHlsZT0ic2hhcGUtcmVuZGVyaW5nOmdlb21ldHJpY1ByZWNpc2lvbjt0ZXh0LXJlbmRlcmluZzpnZW9tZXRyaWNQcmVjaXNpb247aW1hZ2UtcmVuZGVyaW5nOm9wdGltaXplUXVhbGl0eTsiIHZpZXdCb3g9IjAgMCA2LjYyMzIgNi4zMDYzIiB4PSIwcHgiIHk9IjBweCIgZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiPjxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+CiAgIAogICAgLmZpbDAge2ZpbGw6I0ZGRkZGRn0KICAgCiAgPC9zdHlsZT48L2RlZnM+PGc+PHBhdGggY2xhc3M9ImZpbDAiIGQ9Ik0wLjAxNjYwMDMgMi44MzM0NGMtMC4xNzY3MDMsMS43MzIyMyAxLjA4NDQyLDMuMjc5NzUgMi44MTY4NCwzLjQ1NjM1IDAuODkzODEzLDAuMDkxMTAxNCAxLjczODIzLC0wLjIwMDUwMyAyLjM3MDY0LC0wLjc0MjAxMWwxLjMzNzMyIDAuNDEyMzA2YzAuMDI0NzAwNCwwLjAwNzUwMDExIDAuMDUwMzAwOCwwLjAwMDEwMDAwMiAwLjA2NjkwMSwtMC4wMTk5MDAzIDAuMDE2NzAwMywtMC4wMTk4MDAzIDAuMDE5NjAwMywtMC4wNDYzMDA3IDAuMDA3NjAwMTEsLTAuMDY5MzAxbC0wLjY1NzExIC0xLjI3NzQyYzAuMTc0NTAzLC0wLjMzOTkwNSAwLjI4OTkwNCwtMC43MTc0MTEgMC4zMzEwMDUsLTEuMTIwNDIgMC4xNzY2MDMsLTEuNzMyMzMgLTEuMDg0NDIsLTMuMjc5NzUgLTIuODE2NzQsLTMuNDU2MzUgLTEuNzMyNDMsLTAuMTc2NzAzIC0zLjI3OTg1LDEuMDg0NDIgLTMuNDU2NDUsMi44MTY3NHoiPjwvcGF0aD48L2c+PC9zdmc+)
+
+    .card-type-video
+      @include badge
+      left: $badge-pad / 2
+      top: $badge-pad / 2
+      display: flex
+      align-items: center
+      justify-content: center
+      width: 1rem
+      &::after
+        content: '\25b6'
+
+    &:hover
+      box-shadow: 0 0 7px rgba(0, 0, 0, .6)
+      //transform: scale(1.03)
