@@ -6,24 +6,27 @@ from typing import Optional
 import json
 from contextlib import asynccontextmanager
 
-import uvicorn
 from aiohttp import ClientSession
-from fastapi import FastAPI, Cookie, Response, Depends, Body
-from starlette.middleware.cors import CORSMiddleware
+from fastapi import FastAPI, Cookie, Response, Depends, Body, APIRouter
 from starlette.responses import RedirectResponse
 
 from hastygram import api
 
-app = FastAPI()
+router = APIRouter(prefix="/_")
 
-app.add_middleware(
-    CORSMiddleware,
-    # TODO
-    allow_origins=["http://localhost:3000"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+app = FastAPI()
+app.include_router(router)
+
+
+# from starlette.middleware.cors import CORSMiddleware
+# app.add_middleware(
+#     CORSMiddleware,
+#     # TODO
+#     allow_origins=["http://localhost:3000"],
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
 
 
 @dataclasses.dataclass(frozen=True)
@@ -68,7 +71,7 @@ async def session(sessionid: Optional[str] = Cookie(None)):
 session_cm = asynccontextmanager(session)
 
 
-@app.post("/authenticate")
+@router.post("/authenticate")
 async def authenticate(response: Response, sessionid: str = Body(..., embed=True)):
     async with session_cm(sessionid) as s:
         info = await api.self_info(s)
@@ -81,7 +84,7 @@ async def authenticate(response: Response, sessionid: str = Body(..., embed=True
     }
 
 
-@app.get("/{username}")
+@router.get("/{username}")
 async def user_redirect(username: str, limit: Optional[int] = 12, s=Depends(session)):
     async with s:
         user = await api.user_data(s, username)
@@ -95,7 +98,7 @@ async def user_redirect(username: str, limit: Optional[int] = 12, s=Depends(sess
     return RedirectResponse(f"/u/{user_id}?limit={limit}&p={profile.encode()}")
 
 
-@app.get("/u/{uid}")
+@router.get("/u/{uid}")
 async def user_profile(uid: str, after: Optional[str] = None, limit: Optional[int] = 12,
                        profile=Depends(URLProfile.depends), s=Depends(session)):
     async with s:
@@ -105,4 +108,5 @@ async def user_profile(uid: str, after: Optional[str] = None, limit: Optional[in
 
 
 if __name__ == '__main__':
+    import uvicorn
     uvicorn.run(app, port=8000)
