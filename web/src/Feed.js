@@ -18,10 +18,8 @@ const flattenGroup = group =>
     dimensions: media.dimensions,
   }));
 
-
 const flatten = cards =>
   cards.flatMap(card => card.type === "group" ? flattenGroup(card) : [card]);
-
 
 export default function Feed() {
   const {username} = useParams();
@@ -126,7 +124,12 @@ export default function Feed() {
 
   return (<>
       <section className="user-info">
-        {!!profile && <div className="user-pic" style={{backgroundImage: `url(${profile.thumb})`}}/>}
+        {!!profile && <div className="user-pic" style={{backgroundImage: `url(${profile.thumb})`}}
+                           onClick={(e) => setModalCard({
+                             type: "image",
+                             src: profile.thumb,
+                             dimensions: {width: 320, height: 320}
+                           })}/>}
         <div className="user-username">
           <h3>{username}</h3>
           {!!profile && <span className="user-fullname">{profile.fullname}</span>}
@@ -136,12 +139,15 @@ export default function Feed() {
             <li><strong title={`${cardCount}`}>{humanCount(cardCount)}</strong> posts</li>
             <li><strong title={`${profile.follower_count}`}>{humanCount(profile.follower_count)}</strong> followers</li>
           </ul>
-          {profile.biography.length && <details className="user-bio"><summary>Bio</summary>{profile.biography}</details>}
+          {profile.biography.length && <details className="user-bio">
+            <summary>Bio</summary>
+            {profile.biography}</details>}
         </>}
       </section>
       <section className="feed-grid">
         {cards.map(card => <Card key={card.id} card={card} onClick={onCardClick}/>)}
-        {hasMore ? <div ref={loaderRef} className="loading">Loading more...</div> : <span className="end">You've reached the end.</span>}
+        {hasMore ? <div ref={loaderRef} className="loading">Loading more...</div> :
+          <span className="end">You've reached the end.</span>}
       </section>
       <div className="modal" style={{display: modalCard === null ? "none" : null}}
            tabIndex={0} onKeyDown={e => e.key === "Escape" && closeModal()} ref={modalRef}>

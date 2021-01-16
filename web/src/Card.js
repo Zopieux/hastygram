@@ -1,5 +1,15 @@
 import React from "react"
-import {humanCount} from "./const";
+import {humanCount, timeAgo} from "./const";
+
+function formatDate(date) {
+  const pad = (x) => `${x}`.padStart(2, "0");
+  const d = new Date(date);
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+function formatTimeAgo(date) {
+  return timeAgo.format(new Date(date), "mini");
+}
 
 export default function Card({card, onClick, ...props}) {
   const {id, caption, date, src, thumb, dimensions, comment_count, like_count, type} = card;
@@ -19,6 +29,7 @@ export default function Card({card, onClick, ...props}) {
       {resolution && <span className="card-resolution">{resolution}</span>}
       <span className={`card-type-${type}`}/>
       <div className="card-counters">
+        <span className="date" title={formatDate(date)}>{formatTimeAgo(date)}</span>
         <span className="like-count">{humanCount(like_count)}</span>
         <span className="comment-count">{humanCount(comment_count)}</span>
       </div>
