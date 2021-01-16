@@ -1,5 +1,5 @@
 import React from "react";
-import {apiFetch} from "./const";
+import {API_BASE, apiFetch} from "./const";
 
 export default function Authentication() {
   const [sessionId, setSessionId] = React.useState(null);
@@ -7,7 +7,7 @@ export default function Authentication() {
 
   React.useEffect(() => {
     if (!sessionId) return;
-    apiFetch({path: `/authenticate`, method: "POST", body: {sessionid: sessionId}})
+    apiFetch({path: `${API_BASE}/authenticate`, method: "POST", body: {sessionid: sessionId}})
       .then(r => r.json())
       .then(setUserData);
   }, [sessionId]);

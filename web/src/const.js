@@ -4,10 +4,10 @@ import en from "javascript-time-ago/locale/en";
 TimeAgo.addDefaultLocale(en);
 export const timeAgo = new TimeAgo("en-US");
 
-const API = "/_";
+export const API_BASE = "/_";
 
 export const apiFetch = ({path, method = "GET", body = null, ...opts}) => {
-  return fetch(`${API}${path}`, {
+  return fetch(path, {
     method,
     credentials: "include",
     ...(body ? {body: JSON.stringify(body)} : {}),

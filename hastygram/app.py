@@ -12,16 +12,12 @@ from starlette.responses import RedirectResponse
 
 from hastygram import api
 
-router = APIRouter(prefix="/_")
-
-app = FastAPI()
-app.include_router(router)
+router = APIRouter()
 
 
 # from starlette.middleware.cors import CORSMiddleware
 # app.add_middleware(
 #     CORSMiddleware,
-#     # TODO
 #     allow_origins=["http://localhost:3000"],
 #     allow_credentials=True,
 #     allow_methods=["*"],
@@ -95,7 +91,8 @@ async def user_redirect(username: str, limit: Optional[int] = 12, s=Depends(sess
                          biography=user["biography"][:240],
                          website=user["external_url"],
                          follower_count=user["edge_followed_by"]["count"])
-    return RedirectResponse(f"/u/{user_id}?limit={limit}&p={profile.encode()}")
+    return RedirectResponse(
+        app.url_path_for("user_profile", uid=user_id) + f"?limit={limit}&p={profile.encode()}")
 
 
 @router.get("/u/{uid}")
@@ -107,6 +104,10 @@ async def user_profile(uid: str, after: Optional[str] = None, limit: Optional[in
     return {"feed": feed, "profile": profile}
 
 
+app = FastAPI()
+app.include_router(router, prefix="/_")
+
 if __name__ == '__main__':
     import uvicorn
+
     uvicorn.run(app, port=8000)

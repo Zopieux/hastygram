@@ -2,8 +2,11 @@ import React from "react";
 import {useParams} from "react-router-dom";
 
 import {useTitle} from "./hooks";
-import {apiFetch, humanCount} from "./const";
+import {API_BASE, apiFetch, humanCount} from "./const";
 import Card from "./Card";
+
+const BATCH_SIZE = 12;
+const PROFILE_PICTURE_DIMENSIONS = {width: 320, height: 320};
 
 const flattenGroup = group =>
   group.medias.map(media => ({
@@ -23,7 +26,7 @@ const flatten = cards =>
 
 export default function Feed() {
   const {username} = useParams();
-  const initialFeedState = {path: `/${username}`, search: new URLSearchParams({limit: "12"})};
+  const initialFeedState = {path: `${API_BASE}/${username}`, search: new URLSearchParams({limit: `${BATCH_SIZE}`})};
 
   const [profile, setProfile] = React.useState(null);
   const [cards, setCards] = React.useState([]);
@@ -128,7 +131,7 @@ export default function Feed() {
                            onClick={(e) => setModalCard({
                              type: "image",
                              src: profile.thumb,
-                             dimensions: {width: 320, height: 320}
+                             dimensions: PROFILE_PICTURE_DIMENSIONS,
                            })}/>}
         <div className="user-username">
           <h3>{username}</h3>
