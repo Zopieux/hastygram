@@ -1,7 +1,15 @@
+# Run hastygram with
+#    $ uvicorn hastygram.app:app
+# or $ python hastygram/app.py --port 8000
+#
+# Build the frontend with
+#    $ cd web ; yarn run build
+#
+# nginx listens on 8080.
+
 version: "3"
 
 services:
-  # nginx listens on 8080, hastygram API on its default 8000.
   nginx:
     image: nginx:mainline-alpine
     network_mode: host

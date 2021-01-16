@@ -6,6 +6,8 @@ node_modules/
 build/
 webapp/
 webelm/
+dist/
+/*.egg-info
 .eslintcache
 npm-debug.log*
 yarn-debug.log*
