@@ -1,6 +1,7 @@
 import base64
 import dataclasses
 import zlib
+from datetime import timedelta
 from typing import Optional
 
 import json
@@ -12,6 +13,7 @@ from starlette.responses import RedirectResponse
 
 from hastygram import api
 
+MAX_AGE_SECONDS = int(timedelta(hours=1).total_seconds())
 router = APIRouter()
 
 
@@ -86,11 +88,12 @@ async def user_redirect(username: str, limit: Optional[int] = 12, s=Depends(sess
 
 
 @router.get("/u/{uid}")
-async def user_profile(uid: str, after: Optional[str] = None, limit: Optional[int] = 12,
+async def user_profile(response: Response, uid: str, after: Optional[str] = None, limit: Optional[int] = 12,
                        profile=Depends(URLProfile.depends), s=Depends(session)):
     async with s:
         feed = await api.user_feed(s, uid, limit=limit, after=after)
 
+    response.headers["Cache-Control"] = f"max-age={MAX_AGE_SECONDS}"
     return {"feed": feed, "profile": profile}
 
 
