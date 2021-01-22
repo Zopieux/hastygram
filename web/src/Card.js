@@ -25,7 +25,12 @@ export default function Card({card, onClick, ...props}) {
   })();
 
   return (<>
-    <figure {...props} style={{backgroundImage: `url(${thumb})`}} onClick={() => onClick(card)}>
+    <div className="card-wrap" {...props} onClick={() => onClick(card)}>
+      <div className="card-inner">
+        <div className="card-overflow">
+          <img src={thumb} alt=""/>
+        </div>
+      </div>
       {resolution && <span className="card-resolution">{resolution}</span>}
       <span className={`card-type-${type}`}/>
       <div className="card-counters">
@@ -33,8 +38,7 @@ export default function Card({card, onClick, ...props}) {
         <span className="like-count">{humanCount(like_count)}</span>
         <span className="comment-count">{humanCount(comment_count)}</span>
       </div>
-      <figcaption>{caption.substr(0, 64)}</figcaption>
-      {/*<template>{preloadContent}</template>*/}
-    </figure>
+      {/*TODO*/}{/*<div className="card-caption">{caption.substr(0, 64)}</div>*/}
+    </div>
   </>);
 }

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "@juanpablocs/react-pinch-zoom": "^0.2.5",
     "javascript-time-ago": "^2.3.4",
     "node-sass": "4.14.1",
     "react": "^17.0.1",

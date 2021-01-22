@@ -1,5 +1,6 @@
 import React from "react";
-import {useParams} from "react-router-dom";
+import {useHistory, useLocation, useParams} from "react-router-dom";
+import PinchZoomPan from "@juanpablocs/react-pinch-zoom";
 
 import {useTitle} from "./hooks";
 import {API_BASE, apiFetch, humanCount} from "./const";
@@ -25,6 +26,8 @@ const flatten = cards =>
   cards.flatMap(card => card.type === "group" ? flattenGroup(card) : [card]);
 
 export default function Feed() {
+  const history = useHistory();
+  const location = useLocation();
   const {username} = useParams();
   const initialFeedState = {path: `${API_BASE}/${username}`, search: new URLSearchParams({limit: `${BATCH_SIZE}`})};
 
@@ -70,6 +73,12 @@ export default function Feed() {
     }
   }, [loaderRef]);
 
+  React.useEffect(() => {
+    if (!location.hash.length) {
+      setModalCard(null);
+    }
+  }, [location]);
+
   const responseSetUrl = response => {
     const url = new URL(response.url);
     setFeedUrl({path: url.pathname, search: new URLSearchParams(url.search)});
@@ -100,22 +109,31 @@ export default function Feed() {
       .then(responseSetData);
   }, [page]);
 
-  const onCardClick = (card) => {
+  const openModal = (card) => {
+    history.push({hash: card.id});
     setModalCard(card);
   };
+
+  const closeModal = () => {
+    history.push({hash: ""});
+  }
 
   const modalContent = (card => {
     if (card === null) return null;
     const {type, src, dimensions} = card;
     return {
-      "image": <img src={src} width={dimensions.width} height={dimensions.height} alt=""/>,
-      "video": <video controls={true} autoPlay={true} loop={true}>
-        <source src={src}/>
-      </video>
+      "image": (
+        <PinchZoomPan position="center" zoomButtons={true} doubleTapBehavior="zoom">
+          <img src={src} width={dimensions.width} height={dimensions.height} alt=""/>
+        </PinchZoomPan>
+      ),
+      "video": (
+        <video controls={true} autoPlay={true} loop={true}>
+          <source src={src}/>
+        </video>
+      ),
     }[type];
   })(modalCard);
-
-  const closeModal = () => setModalCard(null);
 
   React.useEffect(() => {
     const modalOpen = modalCard !== null;
@@ -148,9 +166,9 @@ export default function Feed() {
         </>}
       </section>
       <section className="feed-grid">
-        {cards.map(card => <Card key={card.id} card={card} onClick={onCardClick}/>)}
-        {hasMore ? <div ref={loaderRef} className="loading">Loading more...</div> :
-          <span className="end">You've reached the end.</span>}
+        {cards.map(card => <Card key={card.id} card={card} onClick={openModal}/>)}
+        {hasMore ? <div ref={loaderRef} className="feed-end">Loading more...</div> :
+          <span className="feed-end">You've reached the end.</span>}
       </section>
       <div className="modal" style={{display: modalCard === null ? "none" : null}}
            tabIndex={0} onKeyDown={e => e.key === "Escape" && closeModal()} ref={modalRef}>

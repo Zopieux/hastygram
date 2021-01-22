@@ -27,9 +27,7 @@ export default function Authentication() {
   }
 
   return (
-    <div className="authentication">
-      {userData ? <span>Authenticated as <strong>{userData.name}</strong></span> : <span>Unauthenticated</span>}
-      <button type="button" onClick={authenticate}>{userData ? "Reauthenticate" : "Authenticate"}</button>
-    </div>
+    <button className={`authentication ${userData ? "authed" : "anonymous"}`}
+            type="button" onClick={authenticate}>{userData ? userData.name : "Authenticate"}</button>
   );
 }
