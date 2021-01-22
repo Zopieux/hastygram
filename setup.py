@@ -1,3 +1,6 @@
+# Copyright (C) 2021 Alexandre Macabies <web+oss@zopieux.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 import setuptools
 
 with open("README.md", "r", encoding="utf-8") as readme:

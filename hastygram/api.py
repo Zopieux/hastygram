@@ -1,3 +1,6 @@
+# Copyright (C) 2021 Alexandre Macabies <web+oss@zopieux.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 import datetime
 import json
 from dataclasses import dataclass

@@ -1,3 +1,6 @@
+# Copyright (C) 2021 Alexandre Macabies <web+oss@zopieux.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 import base64
 import dataclasses
 import zlib
